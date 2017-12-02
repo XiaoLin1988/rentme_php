@@ -19,7 +19,7 @@ class Api extends CI_Controller {
         $image = $_POST['image'];
         $name = $_POST['name'];
 
-        $ifp = fopen( '/var/www/html/uploads/'.$name, 'wb' ); 
+        $ifp = fopen( '/var/www/html/uploads/'.$name, 'wb');
         fwrite( $ifp, base64_decode( $image ) );
         fclose( $ifp ); 
 
@@ -93,7 +93,7 @@ class Api extends CI_Controller {
             'rate' => $_POST['rate'],
             'skills' => $_POST['skills'],
             'avatar' => $_POST['avatar']
-        );      
+        );
 
         $res = $this->user->getUserByName($newuser['name']);
         if (sizeof($res) > 0) {
@@ -157,72 +157,6 @@ class Api extends CI_Controller {
             $ret = false;
         }
         $result['status'] = $ret;
-        echo json_encode($result);
-    }
-
-    public function loginUser() {
-        $result = array();
-
-        $username = $_POST['name'];
-        $userpassword = $_POST['password'];
-
-        //$res = $this->user->getUserByName($username);
-        $res = $this->user->getUserByEmail($username);
-
-        if (!isset($res[0]['password'])) {
-            $result['status'] = false;
-            $result['data'] = "User is not existing. Please sign up.";
-        } elseif ($res[0]['password'] === $userpassword) {
-            $result['status'] = true;
-            $result['data'] = $res;
-        } else {
-            $result['status'] = false;
-            $result['data'] = "Account info is not correct.";
-        }
-
-        echo json_encode($result);
-    }
-
-    public function editUserProfile() {
-        $result = array();
-
-        $newuser = array(
-            'name' => $_POST['name'],
-            'phone' => $_POST['phone'],
-            'address' => $_POST['address'],
-            'latitude' => $_POST['latitude'],
-            'longitude' => $_POST['longitude'],
-            'zipcode' => $_POST['zipcode'],
-            'workday' => $_POST['workday'],
-            'worktime' => $_POST['worktime'],
-            'rate' => $_POST['rate'],
-            'password' => $_POST['password'],
-            'skills' => $_POST['skills'],
-            'avatar' => $_POST['avatar']
-        );
-
-        $id = $_POST['id'];
-        /*
-        $res = $this->user->getUserByName($newuser['name']);
-        if (sizeof($res) > 0) {
-            $result['status'] = false;
-            $result['data'] = "User name is already taken, try again with another name.";
-        } else {
-            $res = $this->user->getUserByPhone($newuser['phone']);
-            if (sizeof($res) > 0) {
-                $result['status'] = false;
-                $result['data'] = "Phonenumber is already taken, try again with another name.";
-            } else {
-                $res = $this->user->editUserProfile($newuser, $id);
-                $result['status'] = true;
-                $result['data'] = $res;
-            }
-        }
-        */
-        $res = $this->user->editUserProfile($newuser, $id);
-        $result['status'] = true;
-        $result['data'] = "Edit profile succeed.";
-
         echo json_encode($result);
     }
 
@@ -307,13 +241,13 @@ class Api extends CI_Controller {
 
         echo json_encode($result);
     }
+
     public function createProject() {
         $result = array();
 
         $newproject = array(
             'name' => $_POST['title'],
             'description' => $_POST['description'],
-            //'timeframe' => $_POST['timeframe'],
             'status' => 0,
             'consumer_id' => $_POST['consumer_id'],
             'talent_id' => $_POST['talent_id'],
@@ -349,7 +283,6 @@ class Api extends CI_Controller {
 
         echo json_encode($res);
     }
-
 
     public function getMyReviews() {
         $userid = $_POST['userid'];
