@@ -13,6 +13,10 @@ class Api extends CI_Controller {
         $this->load->model('Projects_model', 'project');
         $this->load->model('Skills_model', 'skill');
         $this->load->model('Services_model', 'service');
+        $this->load->model('Reviews_model', 'review');
+        $this->load->model('Webs_model', 'web');
+        $this->load->model('Videos_model', 'video');
+        $this->load->model('Rates_model', 'rate');
     }
 
     public function uploadImage() {
@@ -48,13 +52,25 @@ class Api extends CI_Controller {
 
     public function getServiceReviews() {
         $result = array();
+        $data = array();
 
+        $curpage = 0;
+        if (isset($_POST['curpage'])) {
+            $curpage = $_POST['curpage'];
+        }
         $serviceid = $_POST['service_id'];
 
-        $res = $this->service->getServiceReviews($serviceid);
+        $sReviews = $this->review->getServiceReviews($serviceid, $curpage, PAGESIZE);
+        /*
+        foreach ($sReviews as $rv) {
+            $rReviews = $this->review->getReviewReviews($rv['id']);
+            $rv['reviews'] = $rReviews;
 
+            array_push($data, $rv);
+        }
+        */
         $result['status'] = true;
-        $result['data'] = $res;
+        $result['data'] = $sReviews;
 
         echo json_encode($result);
     }
@@ -70,6 +86,29 @@ class Api extends CI_Controller {
         } else {
             $result['status'] = false;
             $result['data'] = "User does not exist.";
+        }
+
+        echo json_encode($result);
+    }
+
+    public function loginUser() {
+        $result = array();
+
+        $username = $_POST['name'];
+        $userpassword = $_POST['password'];
+
+        //$res = $this->user->getUserByName($username);
+        $res = $this->user->getUserByEmail($username);
+
+        if (!isset($res[0]['password'])) {
+            $result['status'] = false;
+            $result['data'] = "User is not existing. Please sign up.";
+        } elseif ($res[0]['password'] === $userpassword) {
+            $result['status'] = true;
+            $result['data'] = $res[0];
+        } else {
+            $result['status'] = false;
+            $result['data'] = "Account info is not correct.";
         }
 
         echo json_encode($result);
@@ -168,9 +207,7 @@ class Api extends CI_Controller {
 
         $skill = $_POST['skill'];
 
-        $radius = $_POST['radius'];
-
-        $nearbies = $this->user->searchByLocation($location, $radius, $skill);
+        $nearbies = $this->user->searchByLocation($location, RADIUS, $skill);
 
         echo json_encode($nearbies);
     }
@@ -224,19 +261,51 @@ class Api extends CI_Controller {
         $newservice = array(
             'talent_id' => $_POST['talent_id'],
             'skill_id' => $_POST['skill_id'],
-            'preview' => isset($_POST['preview']) ? $_POST['preview'] : '',
             'title' => $_POST['title'],
             'balance' => $_POST['balance'],
             'detail' => $_POST['detail']
         );
 
         $res = $this->service->createService($newservice);
-        if ($res == true) {
-            $result['status'] = true;
-            $result['data'] = "Creating new service succeed.";
-        } else {
+        if (gettype($res) == "boolean") {
             $result['status'] = false;
-            $result['data'] = "Creating new service failed.";
+            $result['data'] = 0;
+        } else {
+            $result['status'] = true;
+            $result['data'] = $res;
+        }
+
+        echo json_encode($result);
+    }
+
+    public function completeProject() {
+        $pr_id = $_POST['project_id'];
+        $res = $this->project->completeProject($pr_id);
+
+        $result = array();
+        $result['status'] = $res;
+        $result['data'] = $res;
+
+        echo json_encode();
+    }
+
+    public function createProject2() {
+        $result = array();
+
+        $newproject = array(
+            'pr_buyer' => $_POST['buyer_id'],
+            'pr_service' => $_POST['service_id'],
+            'pr_stts' => 0,
+            'pr_df' => 0
+        );
+
+        $res = $this->project->createProject2($newproject);
+        if (gettype($res) == "boolean") {
+            $result['status'] = false;
+            $result['data'] = 0;
+        } else {
+            $result['status'] = true;
+            $result['data'] = $res;
         }
 
         echo json_encode($result);
@@ -336,32 +405,103 @@ class Api extends CI_Controller {
         echo json_encode($result);
     }
 
-    public function completeProject() {
-        $result = array();
-        $id = $_POST['id'];
-
-        /*
-        $res = $this->project->completeProject($id);
-
-        if ($res == true) {
-            $result['status'] = true;
-            $result['data'] = "Complete project successfully.";
-        } else {
-            $result['status'] = false;
-            $result['data'] = "Complete project failed.";
-        }
-        */
-        $result['status'] = false;
-        $result['data'] = "Complete project failed.";
-        echo json_encode($result);
-    }
-
     public function getCategories() {
         $result = array();
 
         $result['status'] = true;
 
         $res = $this->skill->getAllCategory();
+        $result['data'] = $res;
+
+        echo json_encode($result);
+    }
+
+    public function uploadWebs() {
+        $result = array();
+
+        $type = $_POST['type'];
+        $fid = $_POST['foreign_id'];
+
+        $webs = json_decode($_POST['web']);
+
+        foreach ($webs as $web) {
+            $data = array(
+                'web_type' => $type,
+                'web_fid' => $fid,
+                'web_title' => $web->title,
+                'web_content' => $web->content,
+                'web_image' => $web->thumbnail,
+                'web_link' => $web->link,
+                'web_df' => 0
+            );
+
+            $this->web->createWeb($data);
+        }
+
+        $result['status'] = true;
+        $result['data'] = 'success';
+    }
+
+    public function uploadVideos() {
+        $result = array();
+
+        $type = $_POST['type'];
+        $fid = $_POST['foreign_id'];
+
+        $videos = $_POST['video'];
+
+        foreach ($videos as $video) {
+            $data = array(
+                'vd_type' => $type,
+                'vd_fid' => $fid,
+                'vd_url' => $video,
+                'vd_df' => 0
+            );
+
+            $this->video->createVideo($data);
+        }
+
+        $result['status'] = true;
+        $result['data'] = 'success';
+    }
+
+    public function createReview() {
+        $result = array();
+
+        $data = array(
+            'rv_type' => $_POST['type'],
+            'rv_fid' => $_POST['foreign_id'],
+            'rv_content' => $_POST['content'],
+            'rv_score' => $_POST['score'],
+            'rv_usr_id' => $_POST['user_id']
+        );
+
+        $res = $this->review->createReview($data);
+
+        if (gettype($res) == "boolean") {
+            $result['status'] = false;
+            $result['data'] = 0;
+        } else {
+            $result['status'] = true;
+            $result['data'] = $res;
+        }
+
+        echo json_encode($result);
+    }
+
+    public function createRate() {
+        $result = array();
+
+        $data = array(
+            'rt_type' => $_POST['type'],
+            'rt_fid' => $_POST['foreign_id'],
+            'rt_usr_id' => $_POST['user_id'],
+            'rt_fl' => 1
+        );
+
+        $res = $this->rate->createRate($data);
+
+        $result['status'] = true;
         $result['data'] = $res;
 
         echo json_encode($result);

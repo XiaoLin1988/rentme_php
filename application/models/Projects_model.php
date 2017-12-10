@@ -19,9 +19,34 @@ class Projects_model extends CI_Model {
         $values = rtrim($values, ",");
 
         $query = "INSERT INTO projects(".$columns.") VALUES(".$values.")";
-
         $res = $this->db->query($query);
-        return $res;
+
+        if ($res) {
+            return $this->db->insert_id();
+        } else {
+            return $res;
+        }
+    }
+
+    public function createProject2($data) {
+        $columns = "";
+        $values = "";
+        foreach ($data as $key=>$value) {
+            $columns .= $key.",";
+            $values .= "'".$value."',";
+        }
+
+        $columns = rtrim($columns, ",");
+        $values = rtrim($values, ",");
+
+        $query = "INSERT INTO tbl_project(".$columns.") VALUES(".$values.")";
+        $res = $this->db->query($query);
+
+        if ($res) {
+            return $this->db->insert_id();
+        } else {
+            return $res;
+        }
     }
 
     public function getProjectById($id) {
@@ -96,5 +121,14 @@ class Projects_model extends CI_Model {
         $res = $this->db->query("UPDATE projects SET ".$sets." WHERE id={$id}");
 
         return $res;
+    }
+
+    public function completeProject($id) {
+        $res = $this->db->query("UPDATE tbl_project pr SET 'pr_stts'=1 WHERE id={$id}");
+        return $res;
+    }
+
+    public function getProgressProjects($uid) {
+
     }
 }

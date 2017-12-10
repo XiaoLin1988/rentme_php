@@ -47,7 +47,7 @@ class Users_model extends CI_Model {
 
     public function searchByLocation($location, $radius, $skill) {
         $data = $this->db->query(
-            "SELECT id, name, email, type, phone, avatar, zipcode, address, skills, workday, worktime, rate, latitude, longitude, round((
+            "SELECT *, round((
 				6371 * acos (
 				cos ( radians({$location['latitude']}) )
 				* cos( radians( latitude ) )

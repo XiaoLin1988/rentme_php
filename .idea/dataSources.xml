@@ -1,11 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="DataSourceManagerImpl" format="xml" hash="3410036135">
+  <component name="DataSourceManagerImpl" format="xml" hash="3155650436">
     <data-source source="LOCAL" name="MySQL - rentme@rds-mysql-rentme.czbzplvueqdi.us-east-1.rds.amazonaws.com" uuid="93d1dc43-d5db-4485-b6c5-d35eeab2b5f5">
       <driver-ref>mysql</driver-ref>
       <synchronize>true</synchronize>
       <jdbc-driver>com.mysql.jdbc.Driver</jdbc-driver>
       <jdbc-url>jdbc:mysql://rds-mysql-rentme.czbzplvueqdi.us-east-1.rds.amazonaws.com:3306/rentme</jdbc-url>
+      <driver-properties>
+        <property name="zeroDateTimeBehavior" value="convertToNull" />
+        <property name="tinyInt1isBit" value="false" />
+        <property name="characterEncoding" value="utf8" />
+        <property name="characterSetResults" value="utf8" />
+        <property name="yearIsDateType" value="false" />
+      </driver-properties>
+    </data-source>
+    <data-source source="LOCAL" name="MySQL - rentme@192.168.0.204" uuid="d4343449-9813-49a2-9e00-6a5520b9f03e">
+      <driver-ref>mysql</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>com.mysql.jdbc.Driver</jdbc-driver>
+      <jdbc-url>jdbc:mysql://192.168.0.204:3306/rentme</jdbc-url>
       <driver-properties>
         <property name="zeroDateTimeBehavior" value="convertToNull" />
         <property name="tinyInt1isBit" value="false" />

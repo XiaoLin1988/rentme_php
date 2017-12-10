@@ -20,23 +20,27 @@ class Services_model extends CI_Model {
         $values = rtrim($values, ",");
 
         $query = "INSERT INTO services(".$columns.") VALUES(".$values.")";
-
         $res = $this->db->query($query);
-        return $res;
+
+        if ($res) {
+            return $this->db->insert_id();
+        } else {
+            return $res;
+        }
     }
 
     public function getUserServices($talentid) {
         $res = $this->db->query(
-            "SELECT sv.id, sv.title, sv.talent_id, sv.skill_id, sk.title AS skill, sv.preview, sv.detail, sv.balance, COUNT(pr.id) AS review_cnt, AVG(pr.talent_score) AS review_score FROM users u, services sv, skills sk, projects pr WHERE sv.talent_id={$talentid} AND u.id=sv.talent_id AND sk.id=sv.skill_id AND pr.service_id=sv.id"
+            "SELECT
+              sv.*,
+              (SELECT count(*) FROM tbl_review rv WHERE rv.rv_usr_id=sv.talent_id AND rv.rv_fid=sv.id AND rv.rv_type=0) AS review_cnt,
+              (SELECT avg(rv.rv_score) FROM tbl_review rv WHERE rv.rv_usr_id=sv.talent_id AND rv.rv_fid=sv.id AND rv.rv_type=0) AS review_score,
+              sk.title AS skill_title, sk.preview AS skill_preview
+            FROM
+              services sv, skills sk
+            WHERE
+              sv.talent_id={$talentid} AND sk.id=sv.skill_id"
         )->result_array();
-
-        return $res;
-    }
-
-    public function getServiceReviews($serviceid) {
-        $res = $this->db->query("
-                SELECT * FROM projects WHERE service_id={$serviceid}
-            ")->result_array();
 
         return $res;
     }
