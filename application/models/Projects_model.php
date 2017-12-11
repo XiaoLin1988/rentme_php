@@ -81,13 +81,36 @@ class Projects_model extends CI_Model {
     }
 
     public function getMyProgressProjects($userid) {
-        $res = $this->db->query("SELECT * FROM projects WHERE (consumer_id={$userid} OR talent_id={$userid}) AND status=0")->result_array();
+        $res = $this->db->query(
+            "SELECT
+                  sv.id as sv_id,
+                  sv.title as sv_title,
+                  sv.talent_id,
+                  sv.skill_id,
+                  sv.preview as sv_preview,
+                  sv.balance as sv_balance,
+                  sv.detail as sv_detail,
+                  pr.id as pr_id,
+                  pr.pr_stts,
+                  pr.pr_ctime
+                FROM tbl_project pr, services sv WHERE pr.pr_buyer={$userid} AND pr.pr_service=sv.id AND pr.pr_stts=0")->result_array();
 
         return $res;
     }
 
     public function getMyCompletedProjects($userid) {
-        $res = $this->db->query("SELECT * FROM projects WHERE (consumer_id={$userid} OR talent_id={$userid}) AND status=1")->result_array();
+        $res = $this->db->query("SELECT
+                  sv.id as sv_id,
+                  sv.title as sv_title,
+                  sv.talent_id,
+                  sv.skill_id,
+                  sv.preview as sv_preview,
+                  sv.balance as sv_balance,
+                  sv.detail as sv_detail,
+                  pr.id as pr_id,
+                  pr.pr_stts,
+                  pr.pr_ctime
+                FROM tbl_project pr, services sv WHERE pr.pr_buyer={$userid} AND pr.pr_service=sv.id AND pr.pr_stts=1")->result_array();
 
         return $res;
     }
@@ -124,7 +147,7 @@ class Projects_model extends CI_Model {
     }
 
     public function completeProject($id) {
-        $res = $this->db->query("UPDATE tbl_project pr SET 'pr_stts'=1 WHERE id={$id}");
+        $res = $this->db->query("UPDATE tbl_project pr SET pr.pr_stts=1 WHERE id={$id}");
         return $res;
     }
 

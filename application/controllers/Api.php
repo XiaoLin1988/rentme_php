@@ -52,7 +52,6 @@ class Api extends CI_Controller {
 
     public function getServiceReviews() {
         $result = array();
-        $data = array();
 
         $curpage = 0;
         if (isset($_POST['curpage'])) {
@@ -61,16 +60,20 @@ class Api extends CI_Controller {
         $serviceid = $_POST['service_id'];
 
         $sReviews = $this->review->getServiceReviews($serviceid, $curpage, PAGESIZE);
-        /*
-        foreach ($sReviews as $rv) {
-            $rReviews = $this->review->getReviewReviews($rv['id']);
-            $rv['reviews'] = $rReviews;
 
-            array_push($data, $rv);
-        }
-        */
         $result['status'] = true;
         $result['data'] = $sReviews;
+
+        echo json_encode($result);
+    }
+
+    public function getReviewReviews() {
+        $result = array();
+
+        $rReviews = $this->review->getReviewReviews($_POST['review_id']);
+
+        $result['status'] = true;
+        $result['data'] = $rReviews;
 
         echo json_encode($result);
     }
@@ -286,7 +289,7 @@ class Api extends CI_Controller {
         $result['status'] = $res;
         $result['data'] = $res;
 
-        echo json_encode();
+        echo json_encode($result);
     }
 
     public function createProject2() {
@@ -342,7 +345,11 @@ class Api extends CI_Controller {
 
         $res = $this->project->getMyProgressProjects($userid);
 
-        echo json_encode($res);
+        $result = array();
+        $result['status'] = true;
+        $result['data'] = $res;
+
+        echo json_encode($result);
     }
 
     public function getMyCompletedProjects() {
@@ -350,7 +357,11 @@ class Api extends CI_Controller {
 
         $res = $this->project->getMyCompletedProjects($userid);
 
-        echo json_encode($res);
+        $result = array();
+        $result['status'] = true;
+        $result['data'] = $res;
+
+        echo json_encode($result);
     }
 
     public function getMyReviews() {
