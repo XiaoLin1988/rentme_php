@@ -14,13 +14,15 @@ class Service extends CI_Controller
         $this->load->model('Services_model', 'service');
     }
 
-    public function createService() {
+    public function createServiceIos() {
         $result = array();
+
+        $preview = $this->uploadImageF($_POST['preview'], $_POST['name']);
 
         $newservice = array(
             'talent_id' => $_POST['talent_id'],
             'skill_id' => $_POST['skill_id'],
-            'preview' => isset($_POST['preview']) ? $_POST['preview'] : '',
+            'preview' => $preview,
             'title' => $_POST['title'],
             'balance' => $_POST['balance'],
             'detail' => $_POST['detail']
@@ -33,6 +35,29 @@ class Service extends CI_Controller
         } else {
             $result['status'] = false;
             $result['data'] = "Creating new service failed.";
+        }
+
+        echo json_encode($result);
+    }
+
+    public function createService() {
+        $result = array();
+
+        $newservice = array(
+            'talent_id' => $_POST['talent_id'],
+            'skill_id' => $_POST['skill_id'],
+            'title' => $_POST['title'],
+            'balance' => $_POST['balance'],
+            'detail' => $_POST['detail']
+        );
+
+        $res = $this->service->createService($newservice);
+        if (gettype($res) == "boolean") {
+            $result['status'] = false;
+            $result['data'] = 0;
+        } else {
+            $result['status'] = true;
+            $result['data'] = $res;
         }
 
         echo json_encode($result);
@@ -53,12 +78,16 @@ class Service extends CI_Controller
     public function getServiceReviews() {
         $result = array();
 
+        $curpage = 0;
+        if (isset($_POST['curpage'])) {
+            $curpage = $_POST['curpage'];
+        }
         $serviceid = $_POST['service_id'];
 
-        $res = $this->service->getServiceReviews($serviceid);
+        $sReviews = $this->review->getServiceReviews($serviceid, $curpage, PAGESIZE);
 
         $result['status'] = true;
-        $result['data'] = $res;
+        $result['data'] = $sReviews;
 
         echo json_encode($result);
     }

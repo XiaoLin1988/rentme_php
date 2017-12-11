@@ -30,6 +30,29 @@ class User extends CI_Controller
         echo json_encode($result);
     }
 
+    public function loginUser() {
+        $result = array();
+
+        $username = $_POST['name'];
+        $userpassword = $_POST['password'];
+
+        //$res = $this->user->getUserByName($username);
+        $res = $this->user->getUserByEmail($username);
+
+        if (!isset($res[0]['password'])) {
+            $result['status'] = false;
+            $result['data'] = "User is not existing. Please sign up.";
+        } elseif ($res[0]['password'] === $userpassword) {
+            $result['status'] = true;
+            $result['data'] = $res[0];
+        } else {
+            $result['status'] = false;
+            $result['data'] = "Account info is not correct.";
+        }
+
+        echo json_encode($result);
+    }
+
     public function registerUser() {
         $result = array();
 
@@ -60,7 +83,7 @@ class User extends CI_Controller
                 $result['status'] = false;
                 $result['data'] = "Phonenumber is already taken, try again with another name.";
             } else {
-                $this->user->registerUser($newuser);
+                $res = $this->user->registerUser($newuser);
                 $result['status'] = true;
                 $result['data'] = "Regiser User succeed.";
             }
@@ -69,53 +92,52 @@ class User extends CI_Controller
         echo json_encode($result);
     }
 
-    public function loginUser() {
+    public function forgotPassword() {
         $result = array();
+        $email = $_POST['email'];
+        $code = $_POST['code'];
 
-        $username = $_POST['name'];
-        $userpassword = $_POST['password'];
-
-        //$res = $this->user->getUserByName($username);
-        $res = $this->user->getUserByEmail($username);
-
-        if (!isset($res[0]['password'])) {
-            $result['status'] = false;
-            $result['data'] = "User is not existing. Please sign up.";
-        } elseif ($res[0]['password'] === $userpassword) {
-            $result['status'] = true;
-            $result['data'] = $res;
+        $res = $this->user->getUserByEmail($email);
+        if (sizeof($res) > 0) {
+            $user = array('password' => $code);
+            $this->user->editUserProfile($user, $res[0]['id']);
+            $ret = $this->sendEmail($email, $code);
         } else {
-            $result['status'] = false;
-            $result['data'] = "Account info is not correct.";
+            $ret = false;
         }
-
+        $result['status'] = $ret;
         echo json_encode($result);
     }
 
-    public function editUserProfile() {
-        $result = array();
-
-        $newuser = array(
-            'name' => $_POST['name'],
-            'phone' => $_POST['phone'],
-            'address' => $_POST['address'],
+    public function searchByLocation() {
+        $location = array(
             'latitude' => $_POST['latitude'],
-            'longitude' => $_POST['longitude'],
-            'zipcode' => $_POST['zipcode'],
-            'workday' => $_POST['workday'],
-            'worktime' => $_POST['worktime'],
-            'rate' => $_POST['rate'],
-            'password' => $_POST['password'],
-            'skills' => $_POST['skills'],
-            'avatar' => $_POST['avatar']
+            'longitude' => $_POST['longitude']
         );
 
-        $id = $_POST['id'];
+        $skill = $_POST['skill'];
 
-        $this->user->editUserProfile($newuser, $id);
+        $nearbies = $this->user->searchByLocation($location, RADIUS, $skill);
+
+        echo json_encode($nearbies);
+    }
+
+    public function shareLocation() {
+        $result = array();
+
+        $data = array(
+            "id" => $_POST['userid'],
+            "latitude" => $_POST['latitude'],
+            "longitude" => $_POST['longitude']
+        );
+
+        $this->user->shareLocation($data);
+
         $result['status'] = true;
-        $result['data'] = "Edit profile succeed.";
+        $result['data'] = "Successfully shared.";
 
         echo json_encode($result);
     }
+
+
 }
