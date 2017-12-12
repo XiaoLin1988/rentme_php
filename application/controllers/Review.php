@@ -40,11 +40,25 @@ class Review extends CI_Controller
 
     public function getReviewReviews() {
         $result = array();
+        $data = array();
+
+        $userid = $_POST['user_id'];
 
         $rReviews = $this->review->getReviewReviews($_POST['review_id']);
+        foreach ($rReviews as $review) {
+            $rateCnt = $this->rate->getRateCount($review['id']);
+            $reviewCnt = $this->review->getReviewReviewCount($review['id']);
+            $rated = $this->rate->checkRated($review['id'], $userid);
+
+            $review['rated'] = $rated;
+            $review['rate_count'] = $rateCnt;
+            $review['review_count'] = $reviewCnt;
+
+            array_push($data, $review);
+        }
 
         $result['status'] = true;
-        $result['data'] = $rReviews;
+        $result['data'] = $data;
 
         echo json_encode($result);
     }

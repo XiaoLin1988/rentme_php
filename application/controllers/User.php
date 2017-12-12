@@ -30,6 +30,18 @@ class User extends CI_Controller
         echo json_encode($result);
     }
 
+    public function getUserServices() {
+        $result = array();
+
+        $talentid = $_POST['talentid'];
+
+        $res = $this->service->getUserServices($talentid);
+
+        $result['status'] = true;
+        $result['data'] = $res;
+        echo json_encode($result);
+    }
+
     public function loginUser() {
         $result = array();
 
