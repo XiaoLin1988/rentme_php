@@ -12,6 +12,7 @@ class User extends CI_Controller
     {
         parent::__construct();
         $this->load->model('Users_model', 'user');
+        $this->load->model('Services_model', 'service');
     }
 
     public function getUserById() {
