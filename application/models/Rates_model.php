@@ -35,4 +35,16 @@ class Rates_model extends CI_Model
             return 1;
         }
     }
+
+    public function getRateCount($reviewid) {
+        $res = $this->db->query("
+            SELECT
+                COUNT(*) AS cnt
+            FROM
+              tbl_rate
+            WHERE
+              rt_type=1 AND rt_fid={$reviewid}
+        ")->result_array();
+        return $res[0]['cnt'];
+    }
 }

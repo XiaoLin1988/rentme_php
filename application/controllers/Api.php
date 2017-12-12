@@ -52,6 +52,7 @@ class Api extends CI_Controller {
 
     public function getServiceReviews() {
         $result = array();
+        $data = array();
 
         $curpage = 0;
         if (isset($_POST['curpage'])) {
@@ -60,9 +61,18 @@ class Api extends CI_Controller {
         $serviceid = $_POST['service_id'];
 
         $sReviews = $this->review->getServiceReviews($serviceid, $curpage, PAGESIZE);
+        foreach ($sReviews as $review) {
+            $rateCnt = $this->rate->getRateCount($review['id']);
+            $reviewCnt = $this->review->getReviewReviewCount($review['id']);
+
+            $review['rate_count'] = $rateCnt;
+            $review['review_count'] = $reviewCnt;
+
+            array_push($data, $review);
+        }
 
         $result['status'] = true;
-        $result['data'] = $sReviews;
+        $result['data'] = $data;
 
         echo json_encode($result);
     }

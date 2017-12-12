@@ -56,6 +56,18 @@ class Reviews_model extends CI_Model
         return $res[0]['cnt'];
     }
 
+    public function getReviewReviewCount($reviewid) {
+        $res = $this->db->query("
+            SELECT
+                COUNT(*) AS cnt
+            FROM
+              tbl_review
+            WHERE
+              rv_type=1 AND rv_fid={$reviewid}
+        ")->result_array();
+        return $res[0]['cnt'];
+    }
+
     public function getReviewReviews($reviewid) {
         $res = $this->db->query(
             "SELECT rv.*,
