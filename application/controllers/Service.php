@@ -12,6 +12,8 @@ class Service extends CI_Controller
     {
         parent::__construct();
         $this->load->model('Services_model', 'service');
+        $this->load->model('Rates_model', 'rate');
+        $this->load->model('Reviews_model', 'review');
     }
 
     public function createServiceIos() {
