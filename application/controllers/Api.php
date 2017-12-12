@@ -59,12 +59,15 @@ class Api extends CI_Controller {
             $curpage = $_POST['curpage'];
         }
         $serviceid = $_POST['service_id'];
+        $userid = $_POST['user_id'];
 
         $sReviews = $this->review->getServiceReviews($serviceid, $curpage, PAGESIZE);
         foreach ($sReviews as $review) {
             $rateCnt = $this->rate->getRateCount($review['id']);
             $reviewCnt = $this->review->getReviewReviewCount($review['id']);
+            $rated = $this->rate->checkRated($review['id'], $userid);
 
+            $review['rated'] = $rated;
             $review['rate_count'] = $rateCnt;
             $review['review_count'] = $reviewCnt;
 
@@ -79,11 +82,25 @@ class Api extends CI_Controller {
 
     public function getReviewReviews() {
         $result = array();
+        $data = array();
+
+        $userid = $_POST['user_id'];
 
         $rReviews = $this->review->getReviewReviews($_POST['review_id']);
+        foreach ($rReviews as $review) {
+            $rateCnt = $this->rate->getRateCount($review['id']);
+            $reviewCnt = $this->review->getReviewReviewCount($review['id']);
+            $rated = $this->rate->checkRated($review['id'], $userid);
+
+            $review['rated'] = $rated;
+            $review['rate_count'] = $rateCnt;
+            $review['review_count'] = $reviewCnt;
+
+            array_push($data, $review);
+        }
 
         $result['status'] = true;
-        $result['data'] = $rReviews;
+        $result['data'] = $data;
 
         echo json_encode($result);
     }
@@ -494,7 +511,8 @@ class Api extends CI_Controller {
             'rv_fid' => $_POST['foreign_id'],
             'rv_content' => $_POST['content'],
             'rv_score' => $_POST['score'],
-            'rv_usr_id' => $_POST['user_id']
+            'rv_usr_id' => $_POST['user_id'],
+            'rv_df' => 0
         );
 
         $res = $this->review->createReview($data);
