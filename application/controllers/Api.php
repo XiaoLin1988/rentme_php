@@ -30,14 +30,6 @@ class Api extends CI_Controller {
         echo $name;
     }
 
-    public function uploadImageF($image, $name) {
-        $ifp = fopen( '/var/www/html/uploads/'.$name, 'wb' ); 
-        fwrite( $ifp, base64_decode( $image ) );
-        fclose( $ifp ); 
-
-        return '/var/www/html/uploads/'.$name;
-    }
-
     public function getUserServices() {
         $result = array();
 
@@ -194,6 +186,24 @@ class Api extends CI_Controller {
 
     }
 
+    public function forgotPassword()
+    {
+        $result = array();
+        $email = $_POST['email'];
+        $code = $_POST['code'];
+
+        $res = $this->user->getUserByEmail($email);
+        if (sizeof($res) > 0) {
+            $user = array('password' => $code);
+            $this->user->editUserProfile($user, $res[0]['id']);
+            $ret = $this->sendEmail($email, $code);
+        } else {
+            $ret = false;
+        }
+        $result['status'] = $ret;
+        echo json_encode($result);
+    }
+
     public function sendEmail($email, $code) {
         ini_set('display_errors',1);
 
@@ -210,23 +220,6 @@ class Api extends CI_Controller {
         $res = mail($to, $subject, $message, $headers);   
 
         return $res;
-    }
-
-    public function forgotPassword() {
-        $result = array();
-        $email = $_POST['email'];
-        $code = $_POST['code'];
-
-        $res = $this->user->getUserByEmail($email);
-        if (sizeof($res) > 0) {
-            $user = array('password' => $code);
-            $this->user->editUserProfile($user, $res[0]['id']);
-            $ret = $this->sendEmail($email, $code);
-        } else {
-            $ret = false;
-        }
-        $result['status'] = $ret;
-        echo json_encode($result);
     }
 
     public function searchByLocation() {
@@ -283,6 +276,15 @@ class Api extends CI_Controller {
         }
 
         echo json_encode($result);
+    }
+
+    public function uploadImageF($image, $name)
+    {
+        $ifp = fopen('/var/www/html/uploads/' . $name, 'wb');
+        fwrite($ifp, base64_decode($image));
+        fclose($ifp);
+
+        return '/var/www/html/uploads/' . $name;
     }
 
     public function createService() {
