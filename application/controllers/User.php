@@ -109,6 +109,24 @@ class User extends CI_Controller
         echo json_encode($result);
     }
 
+    public function sendEmail($email, $code) {
+        ini_set('display_errors',1);
+
+        $to = $email;
+        $subject = "Hello. Here is JCChat.";
+        $message = "Your temp password.\n\n"
+            ."code : \n"
+            .$code."\n\n";
+        $from = "RentME";
+        $headers = "Mime-Version:1.0\n";
+        $headers .= "Content-Type : text/html;charset=UTF-8\n";
+        $headers .= "From:" . $from;
+
+        $res = mail($to, $subject, $message, $headers);
+
+        return $res;
+    }
+
     public function searchByLocation() {
         $location = array(
             'latitude' => $_POST['latitude'],
