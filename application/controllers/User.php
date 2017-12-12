@@ -170,4 +170,123 @@ class User extends CI_Controller
     }
 
 
+
+    /// for Google Login
+    public function checkGoogleUser() {
+
+        $result = array();
+
+        $email = $_POST['email'];
+
+        // check user existing
+        $ret = $this->user->getByGoogle($email);
+
+        if (sizeof($ret) == 0) { // new user, then register
+
+            // register GoogleUser
+
+            $ret = $this->registerGoogleUser($_POST['email'],$_POST['name'],$_POST['avatar']);
+
+            if ( $ret == true ) { // register success
+
+                $ret1 = $this->user->getByGoogle($_POST['email']);
+
+                if (sizeof($ret1) == 0) {
+                    $result['status'] = false;
+                    $result['data'] = "SignUp failed";
+                }
+                else {
+                    $result['status'] = true;
+                    $result['data'] = $ret1[0];
+                }
+
+            } // register failed
+            else {
+                $result['status'] = false;
+                $result['data'] = "SignUp failed";
+            }
+
+
+        }
+        else { // already existing, return user data
+            $result['status'] = true;
+            $result['data'] = $ret[0];
+        }
+
+        echo json_encode($result);
+
+    }
+
+    public function registerGoogleUser($email, $name, $avatar) {
+
+        $newuser = array(
+            'ggName' => $name,
+            'ggId' => $email,
+            'ggProfileUrl' => $avatar
+        );
+
+        $ret = $this->user->registerUser($newuser);
+
+        return $ret;
+    }
+
+    /// for Facebook Login
+    public function checkFacebookUser() {
+
+        $result = array();
+
+        $email = $_POST['email'];
+
+        // check user existing
+        $ret = $this->user->getByFacebook($email);
+
+        if (sizeof($ret) == 0) { // new user, then register
+
+            // register FacebookUser
+
+            $ret = $this->registerFacebookUser($_POST['email'],$_POST['name'],$_POST['avatar']);
+
+            if ( $ret == true ) { // register success
+
+                $ret1 = $this->user->getByFacebook($_POST['email']);
+
+                if (sizeof($ret1) == 0) {
+                    $result['status'] = false;
+                    $result['data'] = "SignUp failed";
+                }
+                else {
+                    $result['status'] = true;
+                    $result['data'] = $ret1[0];
+                }
+
+            } // register failed
+            else {
+                $result['status'] = false;
+                $result['data'] = "SignUp failed";
+            }
+
+
+        }
+        else { // already existing, return user data
+            $result['status'] = true;
+            $result['data'] = $ret[0];
+        }
+
+        echo json_encode($result);
+
+    }
+
+    public function registerFacebookUser($email, $name, $avatar) {
+
+        $newuser = array(
+            'ggName' => $name,
+            'ggId' => $email,
+            'ggProfileUrl' => $avatar
+        );
+
+        $ret = $this->user->registerUser($newuser);
+
+        return $ret;
+    }
+
 }
