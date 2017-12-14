@@ -87,6 +87,26 @@ class Users_model extends CI_Model {
         return $res;
     }
 
+    public function getByGoogle($gaccount) {
+        $query = "SELECT * FROM users WHERE ggId='{$gaccount}'";
+
+        $ret = $this->db->query($query)->result_array();
+
+        return $ret;
+    }
+
+    public function getByFacebook($fbaccount) {
+        $query = "SELECT * FROM users WHERE fbId='{$fbaccount}'";
+
+        $ret = $this->db->query($query)->result_array();
+
+        return $ret;
+    }
+
+
+
+
+
     public function getEarnings($user_id) {
         $res = $this->db->query("
             SELECT
