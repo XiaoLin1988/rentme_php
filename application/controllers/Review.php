@@ -21,7 +21,8 @@ class Review extends CI_Controller
             'rv_fid' => $_POST['foreign_id'],
             'rv_content' => $_POST['content'],
             'rv_score' => $_POST['score'],
-            'rv_usr_id' => $_POST['user_id']
+            'rv_usr_id' => $_POST['user_id'],
+            'rv_df' => 0
         );
 
         $res = $this->review->createReview($data);
