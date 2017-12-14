@@ -57,7 +57,9 @@ class User extends CI_Controller
             $result['data'] = "User is not existing. Please sign up.";
         } elseif ($res[0]['password'] === $userpassword) {
             $result['status'] = true;
-            $result['data'] = $res[0];
+            $data = $res[0];
+            $data['earning'] = $this->user->getEarnings($data['id']);
+            $result['data'] = $data;
         } else {
             $result['status'] = false;
             $result['data'] = "Account info is not correct.";

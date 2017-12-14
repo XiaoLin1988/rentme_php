@@ -14,6 +14,8 @@ class Service extends CI_Controller
         $this->load->model('Services_model', 'service');
         $this->load->model('Rates_model', 'rate');
         $this->load->model('Reviews_model', 'review');
+        $this->load->model('Webs_model', 'web');
+        $this->load->model('Videos_model', 'video');
     }
 
     public function createServiceIos() {
@@ -97,6 +99,8 @@ class Service extends CI_Controller
             $review['rated'] = $rated;
             $review['rate_count'] = $rateCnt;
             $review['review_count'] = $reviewCnt;
+            $review['web_links'] = $this->web->getWebLinks(1, $review['id']);
+            $review['videos'] = $this->video->getVideoLinks(1, $review['id']);
 
             array_push($data, $review);
         }

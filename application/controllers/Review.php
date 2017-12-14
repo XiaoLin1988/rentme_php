@@ -53,6 +53,8 @@ class Review extends CI_Controller
             $review['rated'] = $rated;
             $review['rate_count'] = $rateCnt;
             $review['review_count'] = $reviewCnt;
+            $review['web_links'] = $this->web->getWebLinks(1, $review['id']);
+            $review['videos'] = $this->video->getVideoLinks(1, $review['id']);
 
             array_push($data, $review);
         }
