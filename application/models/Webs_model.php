@@ -24,7 +24,19 @@ class Webs_model extends CI_Model {
         return $res;
     }
 
-    public function getWeb() {
+    public function getWebLinks($type, $fid) {
+        $res = $this->db->query("
+            SELECT
+              web_title AS title,
+              web_content AS content,
+              web_image AS thumbnail,
+              web_link AS link
+            FROM
+              tbl_web
+            WHERE
+              web_type={$type} AND web_fid={$fid}
+        ")->result_array();
 
+        return $res;
     }
 }

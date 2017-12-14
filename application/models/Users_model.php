@@ -83,4 +83,16 @@ class Users_model extends CI_Model {
         return $res;
     }
 
+    public function getEarnings($user_id) {
+        $res = $this->db->query("
+            SELECT
+              SUM(sv.balance) AS earning
+            FROM
+              tbl_project pr, services sv
+            WHERE
+              pr.pr_buyer={$user_id} AND pr.pr_stts=1 AND sv.id=pr.pr_service
+        ")->result_array();
+        $earning = $res[0]['earning'];
+        return $earning;
+    }
 }

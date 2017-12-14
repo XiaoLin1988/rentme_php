@@ -43,7 +43,7 @@ class Rates_model extends CI_Model
             FROM
               tbl_rate
             WHERE
-              rt_type=1 AND rt_fid={$reviewid}
+              rt_type=1 AND rt_fid={$reviewid} AND rt_fl=1
         ")->result_array();
         return $res[0]['cnt'];
     }
@@ -55,7 +55,7 @@ class Rates_model extends CI_Model
             FROM
               tbl_rate
             WHERE
-              rt_type=1 AND rt_fid={$reviewid} AND rt_usr_id={$userid}
+              rt_type=1 AND rt_fid={$reviewid} AND rt_usr_id={$userid} AND rt_fl=1
         ")->result_array();
         if ($res[0]['cnt'] > 0)
             return true;

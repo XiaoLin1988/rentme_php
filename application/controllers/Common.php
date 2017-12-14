@@ -59,6 +59,8 @@ class Common extends CI_Controller
 
         $result['status'] = true;
         $result['data'] = 'success';
+
+        echo json_encode($result);
     }
 
     public function uploadVideos() {
@@ -82,6 +84,8 @@ class Common extends CI_Controller
 
         $result['status'] = true;
         $result['data'] = 'success';
+
+        echo json_encode($result);
     }
 
     public function sendEmail($email, $code) {

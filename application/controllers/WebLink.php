@@ -37,6 +37,8 @@ class WebLink extends CI_Controller
 
         $result['status'] = true;
         $result['data'] = 'success';
+
+        echo json_encode($result);
     }
 
 }

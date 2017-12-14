@@ -23,4 +23,17 @@ class Videos_model extends CI_Model {
         $res = $this->db->query($query);
         return $res;
     }
+
+    public function getVideoLinks($type, $fid) {
+        $res = $this->db->query("
+            SELECT
+              vd_url
+            FROM
+              tbl_video
+            WHERE
+              vd_type={$type} AND vd_fid={$fid}
+        ")->result_array();
+
+        return $res;
+    }
 }
