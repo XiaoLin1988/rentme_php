@@ -22,7 +22,11 @@ class Users_model extends CI_Model {
         $query = "INSERT INTO users(".$columns.") VALUES(".$values.")";
 
         $res = $this->db->query($query);
-        return $res;
+        if ($res) {
+            return $this->db->insert_id();
+        } else {
+            return $res;
+        }
     }
 
     public function getUserByName($name) {

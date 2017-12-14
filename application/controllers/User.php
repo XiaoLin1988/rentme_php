@@ -68,6 +68,28 @@ class User extends CI_Controller
         echo json_encode($result);
     }
 
+    public function signupUser() {
+        $result = array();
+
+        $newuser = array(
+            'name' => $_POST['name'],
+            'email' => $_POST['email'],
+            'password' => $_POST['password']
+        );
+
+        $res = $this->user->getUserByEmail($newuser['email']);
+        if (sizeof($res) > 0) {
+            $result['status'] = false;
+            $result['data'] = 0;
+        } else {
+            $res = $this->user->registerUser($newuser);
+            $result['status'] = true;
+            $result['data'] = $res;
+        }
+
+        echo json_encode($result);
+    }
+
     public function registerUser() {
         $result = array();
 
