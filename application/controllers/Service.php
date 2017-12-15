@@ -29,7 +29,8 @@ class Service extends CI_Controller
             'preview' => $preview,
             'title' => $_POST['title'],
             'balance' => $_POST['balance'],
-            'detail' => $_POST['detail']
+            'detail' => $_POST['detail'],
+            'df' => 0
         );
 
         $res = $this->service->createService($newservice);
@@ -52,7 +53,8 @@ class Service extends CI_Controller
             'skill_id' => $_POST['skill_id'],
             'title' => $_POST['title'],
             'balance' => $_POST['balance'],
-            'detail' => $_POST['detail']
+            'detail' => $_POST['detail'],
+            'df' => 0
         );
 
         $res = $this->service->createService($newservice);
@@ -67,17 +69,7 @@ class Service extends CI_Controller
         echo json_encode($result);
     }
 
-    public function getUserServices() {
-        $result = array();
 
-        $talentid = $_POST['talentid'];
-
-        $res = $this->service->getUserServices($talentid);
-
-        $result['status'] = true;
-        $result['data'] = $res;
-        echo json_encode($result);
-    }
 
     public function getServiceReviews() {
         $result = array();
@@ -100,13 +92,28 @@ class Service extends CI_Controller
             $review['rate_count'] = $rateCnt;
             $review['review_count'] = $reviewCnt;
             $review['web_links'] = $this->web->getWebLinks(1, $review['id']);
-            $review['videos'] = $this->video->getVideoLinks(1, $review['id']);
+            $review['videos'] = array();
+            $videos = $this->video->getVideoLinks(1, $review['id']);
+            foreach ($videos as $vd) {
+                array_push($review['videos'], $vd['vd_url']);
+            }
 
             array_push($data, $review);
         }
 
         $result['status'] = true;
         $result['data'] = $data;
+
+        echo json_encode($result);
+    }
+
+    public function deleteservice() {
+        $result = array();
+
+        $res = $this->service->deleteservice($_POST['service_id']);
+
+        $result['status'] = true;
+        $result['data'] = $res;
 
         echo json_encode($result);
     }
