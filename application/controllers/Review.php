@@ -58,7 +58,11 @@ class Review extends CI_Controller
             $review['rate_count'] = $rateCnt;
             $review['review_count'] = $reviewCnt;
             $review['web_links'] = $this->web->getWebLinks(1, $review['id']);
-            $review['videos'] = $this->video->getVideoLinks(1, $review['id']);
+            $review['videos'] = array();
+            $videos = $this->video->getVideoLinks(1, $review['id']);
+            foreach ($videos as $vd) {
+                array_push($review['videos'], $vd['vd_url']);
+            }
 
             array_push($data, $review);
         }

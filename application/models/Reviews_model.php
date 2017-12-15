@@ -38,7 +38,7 @@ class Reviews_model extends CI_Model
             FROM
               tbl_review rv, tbl_project pr
             WHERE
-              rv.rv_type=0 AND rv.rv_fid=pr.pr_service AND pr.pr_stts=3 AND pr.id={$projectid}"
+              rv.rv_type=0 AND rv.rv_fid=pr.pr_service AND pr.pr_stts=2 AND pr.id={$projectid}"
         /*LIMIT {$pos}, {$pagesize}"*/)->result_array();
         return $res;
     }

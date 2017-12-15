@@ -12,6 +12,7 @@ class Project extends CI_Controller
     {
         parent::__construct();
         $this->load->model('Projects_model', 'project');
+        $this->load->model('Reviews_model', 'review');
     }
 
     public function completeProject() {
@@ -163,6 +164,11 @@ class Project extends CI_Controller
     public function getProjectReview() {
         $result = array();
 
-        $res = $this->project->getProjectReview($_POST['id']);
+        $res = $this->review->getProejctReview($_POST['id']);
+
+        $result['status'] = true;
+        $result['data'] = $res;
+
+        echo json_encode($result);
     }
 }

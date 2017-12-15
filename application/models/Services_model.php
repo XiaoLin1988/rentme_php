@@ -39,7 +39,7 @@ class Services_model extends CI_Model {
             FROM
               services sv, skills sk
             WHERE
-              sv.talent_id={$talentid} AND sk.id=sv.skill_id"
+              sv.talent_id={$talentid} AND sk.id=sv.skill_id AND sv.df=0"
         )->result_array();
 
         return $res;
@@ -50,8 +50,14 @@ class Services_model extends CI_Model {
             "SELECT id, (SELECT name FROM users u WHERE u.id=sv.talent_id) AS talent,
                 (SELECT title FROM skills sk WHERE sk.id=sv.skill_id) AS skill,
                 preview, balance, detail
-            FROM services sv"
+            FROM services sv WHERE sv.df=0"
         )->result_array();
+
+        return $res;
+    }
+
+    public function deleteservice($service_id) {
+        $res = $this->db->query("UPDATE services SET df=1 WHERE id={$service_id}");
 
         return $res;
     }
