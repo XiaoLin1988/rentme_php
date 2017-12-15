@@ -159,4 +159,10 @@ class Project extends CI_Controller
 
         echo json_encode($result);
     }
+
+    public function getProjectReview() {
+        $result = array();
+
+        $res = $this->project->getProjectReview($_POST['id']);
+    }
 }

@@ -122,7 +122,7 @@ class Projects_model extends CI_Model {
                   pr.id as pr_id,
                   pr.pr_stts,
                   pr.pr_ctime
-                FROM tbl_project pr, services sv WHERE (pr.pr_buyer={$userid} OR sv.talent_id={$userid}) AND pr.pr_service=sv.id AND pr.pr_stts=1")->result_array();
+                FROM tbl_project pr, services sv WHERE (pr.pr_buyer={$userid} OR sv.talent_id={$userid}) AND pr.pr_service=sv.id AND pr.pr_stts>0")->result_array();
 
         return $res;
     }
@@ -164,6 +164,10 @@ class Projects_model extends CI_Model {
     }
 
     public function getProgressProjects($uid) {
+
+    }
+
+    public function getProjectReview($id) {
 
     }
 }

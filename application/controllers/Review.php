@@ -11,6 +11,9 @@ class Review extends CI_Controller
     public function __construct() {
         parent::__construct();
         $this->load->model('Reviews_model', 'review');
+        $this->load->model('Rates_model', 'rate');
+        $this->load->model('Webs_model', 'web');
+        $this->load->model('Videos_model', 'video');
     }
 
     public function createReview() {

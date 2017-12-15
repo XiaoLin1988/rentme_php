@@ -129,6 +129,22 @@ class User extends CI_Controller
         echo json_encode($result);
     }
 
+    public function editUserProfile() {
+        $result = array();
+
+        $data = array(
+            'name' => $_POST['name'],
+            'description' => $_POST['status'],
+            'address' => $_POST['address']
+        );
+
+        $res = $this->user->editUserProfile($data, $_POST['id']);
+
+        $result['status'] = true;
+        $result['data'] = $res;
+        echo json_encode($result);
+    }
+
     public function forgotPassword() {
         $result = array();
         $email = $_POST['email'];
