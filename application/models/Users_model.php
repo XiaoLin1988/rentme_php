@@ -103,10 +103,6 @@ class Users_model extends CI_Model {
         return $ret;
     }
 
-
-
-
-
     public function getEarnings($user_id) {
         $res = $this->db->query("
             SELECT
@@ -119,4 +115,27 @@ class Users_model extends CI_Model {
         $earning = $res[0]['earning'];
         return $earning;
     }
+
+    public function getMainProfileImageById($userId)
+    {
+        // 1 : profile main, 2 : profile sub,
+
+        $query = "SELECT avatar FROM users WHERE id = '{$userId}'";
+
+        $ret = $this->db->query($query)->result_array();
+
+        return $ret;
+    }
+
+    public function getSubProfileImagesById($userId)
+    {
+        // 1 : profile main, 2 : profile sub,
+
+        $query = "SELECT img_path FROM tbl_img WHERE (img_type = 2 AND img_fid = '{$userId}')";
+
+        $ret = $this->db->query($query)->result_array();
+
+        return $ret;
+    }
+
 }

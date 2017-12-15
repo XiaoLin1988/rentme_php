@@ -328,4 +328,31 @@ class User extends CI_Controller
         return $ret;
     }
 
+    public function getProfileImagesById()
+    {
+        $result = array();
+
+        $mainResult = $this->user->getMainProfileImageById($_POST['userId']);
+        $subResult = $this->user->getSubProfileImagesById($_POST['userId']);
+
+        $result['status'] = true;
+
+        if (sizeof($mainResult) > 0) {
+            $result['data']['mainProfile'][0] = $mainResult[0]["avatar"];
+        } else {
+            $result['data']['mainProfile'] = [];
+        }
+
+        if (sizeof($subResult) > 0) {
+
+            for ($i = 0; $i < sizeof($subResult); $i++) {
+                $result['data']['subProfile'][$i] = $subResult[$i]["img_path"];
+            }
+        } else {
+            $result['data']['subProfile'] = [];
+        }
+
+        echo json_encode($result);
+    }
+
 }
