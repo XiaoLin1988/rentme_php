@@ -17,7 +17,7 @@ class Review extends CI_Controller
         $result = array();
 
         $data = array(
-            'rv_type' => $_POST['type'],
+            'rv_type' => $_POST['type'],   // 0 : service, 1 : review
             'rv_fid' => $_POST['foreign_id'],
             'rv_content' => $_POST['content'],
             'rv_score' => $_POST['score'],

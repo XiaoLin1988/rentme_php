@@ -75,7 +75,17 @@ class Projects_model extends CI_Model {
     }
 
     public function getChattingProject($projectid) {
-        $res = $this->db->query("SELECT name, consumer_id, talent_id, (SELECT avatar FROM users u WHERE u.id=p.consumer_id) AS consumer, (SELECT avatar FROM users u WHERE u.id=p.talent_id) AS talent FROM projects p WHERE id=$projectid")->result_array();
+        $res = $this->db->query(
+            "SELECT
+              sv.title as name,
+              pr.pr_buyer as consumer_id,
+              sv.talent_id as talent_id,
+              (SELECT avatar FROM users u WHERE u.id=sv.talent_id) AS talent,
+              (SELECT avatar FROM users u WHERE u.id=pr.pr_buyer) AS consumer
+            FROM
+              tbl_project pr, services sv
+            WHERE
+              pr.id={$projectid} AND sv.id=pr.pr_service")->result_array();
 
         return $res;
     }
@@ -83,17 +93,18 @@ class Projects_model extends CI_Model {
     public function getMyProgressProjects($userid) {
         $res = $this->db->query(
             "SELECT
-                  sv.id as sv_id,
-                  sv.title as sv_title,
-                  sv.talent_id,
-                  sv.skill_id,
-                  sv.preview as sv_preview,
-                  sv.balance as sv_balance,
-                  sv.detail as sv_detail,
-                  pr.id as pr_id,
-                  pr.pr_stts,
-                  pr.pr_ctime
-                FROM tbl_project pr, services sv WHERE pr.pr_buyer={$userid} AND pr.pr_service=sv.id AND pr.pr_stts=0")->result_array();
+              sv.id as sv_id,
+              sv.title as sv_title,
+              sv.talent_id,
+              pr.pr_buyer AS consumer_id,
+              sv.skill_id,
+              sv.preview as sv_preview,
+              sv.balance as sv_balance,
+              sv.detail as sv_detail,
+              pr.id as pr_id,
+              pr.pr_stts,
+              pr.pr_ctime
+            FROM tbl_project pr, services sv WHERE (pr.pr_buyer={$userid} OR sv.talent_id={$userid}) AND pr.pr_service=sv.id AND pr.pr_stts=0")->result_array();
 
         return $res;
     }
@@ -103,6 +114,7 @@ class Projects_model extends CI_Model {
                   sv.id as sv_id,
                   sv.title as sv_title,
                   sv.talent_id,
+                  pr.pr_buyer AS consumer_id,
                   sv.skill_id,
                   sv.preview as sv_preview,
                   sv.balance as sv_balance,
@@ -110,7 +122,7 @@ class Projects_model extends CI_Model {
                   pr.id as pr_id,
                   pr.pr_stts,
                   pr.pr_ctime
-                FROM tbl_project pr, services sv WHERE pr.pr_buyer={$userid} AND pr.pr_service=sv.id AND pr.pr_stts=1")->result_array();
+                FROM tbl_project pr, services sv WHERE (pr.pr_buyer={$userid} OR sv.talent_id={$userid}) AND pr.pr_service=sv.id AND pr.pr_stts=1")->result_array();
 
         return $res;
     }

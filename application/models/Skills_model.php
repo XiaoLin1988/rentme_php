@@ -9,7 +9,7 @@
 class Skills_model extends CI_Model {
 
     public function getAllCategory() {
-        $res = $this->db->query("SELECT id, title, preview FROM skills")->result_array();
+        $res = $this->db->query("SELECT id, title, preview AS path FROM skills")->result_array();
 
         return $res;
     }
