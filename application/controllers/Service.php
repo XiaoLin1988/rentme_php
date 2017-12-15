@@ -69,28 +69,7 @@ class Service extends CI_Controller
         echo json_encode($result);
     }
 
-    public function getUserServices() {
-        $result = array();
 
-        $talentid = $_POST['talentid'];
-
-        $res = $this->service->getUserServices($talentid);
-        $data = array();
-        foreach ($res as $sv) {
-            $sv['web_links'] = $this->web->getWebLinks(0, $sv['id']);
-            $sv['videos'] = array();
-            $videos = $this->video->getVideoLinks(0, $sv['id']);
-            foreach ($videos as $vd) {
-                array_push($sv['videos'], $vd['vd_url']);
-            }
-
-            array_push($data, $sv);
-        }
-
-        $result['status'] = true;
-        $result['data'] = $data;
-        echo json_encode($result);
-    }
 
     public function getServiceReviews() {
         $result = array();
