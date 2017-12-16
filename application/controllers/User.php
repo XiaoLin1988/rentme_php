@@ -15,6 +15,7 @@ class User extends CI_Controller
         $this->load->model('Services_model', 'service');
         $this->load->model('Webs_model', 'web');
         $this->load->model('Videos_model', 'video');
+        $this->load->model('Photos_model', 'photo');
     }
 
     public function getUserById() {
@@ -46,6 +47,11 @@ class User extends CI_Controller
             $videos = $this->video->getVideoLinks(0, $sv['id']);
             foreach ($videos as $vd) {
                 array_push($sv['videos'], $vd['vd_url']);
+            }
+            $sv['photos'] = array();
+            $photos = $this->photo->getPhotos(3, $sv['id']); // type, serviceId
+            foreach ($photos as $pt) {
+                array_push($sv['photos'], $pt['img_path']);
             }
 
             array_push($data, $sv);

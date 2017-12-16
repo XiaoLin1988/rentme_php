@@ -43,8 +43,7 @@ class Reviews_model extends CI_Model
         return $res;
     }
 
-    public function getServiceReviews($serviceid, $curpage, $pagesize) {
-        $pos = $curpage * $pagesize;
+    public function getServiceReviews($serviceid) {
         $res = $this->db->query(
             "SELECT
               rv.*,
@@ -55,7 +54,7 @@ class Reviews_model extends CI_Model
               tbl_review rv
             WHERE
               rv.rv_type=0 AND rv.rv_fid={$serviceid}"
-            /*LIMIT {$pos}, {$pagesize}"*/)->result_array();
+            )->result_array();
         return $res;
     }
 

@@ -16,6 +16,7 @@ class Service extends CI_Controller
         $this->load->model('Reviews_model', 'review');
         $this->load->model('Webs_model', 'web');
         $this->load->model('Videos_model', 'video');
+        $this->load->model('Photos_model', 'photo');
     }
 
     public function createServiceIos() {
@@ -75,14 +76,10 @@ class Service extends CI_Controller
         $result = array();
         $data = array();
 
-        $curpage = 0;
-        if (isset($_POST['curpage'])) {
-            $curpage = $_POST['curpage'];
-        }
         $serviceid = $_POST['service_id'];
         $userid = $_POST['user_id'];
 
-        $sReviews = $this->review->getServiceReviews($serviceid, $curpage, PAGESIZE);
+        $sReviews = $this->review->getServiceReviews($serviceid);
         foreach ($sReviews as $review) {
             $rateCnt = $this->rate->getRateCount($review['id']);
             $reviewCnt = $this->review->getReviewReviewCount($review['id']);
@@ -96,6 +93,12 @@ class Service extends CI_Controller
             $videos = $this->video->getVideoLinks(1, $review['id']);
             foreach ($videos as $vd) {
                 array_push($review['videos'], $vd['vd_url']);
+            }
+
+            $review['photos'] = array();
+            $photos = $this->photo->getPhotos(4, $review['id']); // type, serviceId
+            foreach ($photos as $pt) {
+                array_push($review['photos'], $pt['img_path']);
             }
 
             array_push($data, $review);
