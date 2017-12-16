@@ -39,25 +39,25 @@ class Rates_model extends CI_Model
     public function getRateCount($reviewid) {
         $res = $this->db->query("
             SELECT
-                COUNT(*) AS cnt
+                id
             FROM
               tbl_rate
             WHERE
               rt_type=1 AND rt_fid={$reviewid} AND rt_fl=1
         ")->result_array();
-        return $res[0]['cnt'];
+        return sizeof($res);
     }
 
     public function checkRated($reviewid, $userid) {
         $res = $this->db->query("
             SELECT
-                COUNT(*) AS cnt
+                id
             FROM
               tbl_rate
             WHERE
               rt_type=1 AND rt_fid={$reviewid} AND rt_usr_id={$userid} AND rt_fl=1
         ")->result_array();
-        if ($res[0]['cnt'] > 0)
+        if (sizeof($res) > 0)
             return true;
         else
             return false;

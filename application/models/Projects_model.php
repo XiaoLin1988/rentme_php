@@ -170,4 +170,9 @@ class Projects_model extends CI_Model {
     public function getProjectReview($id) {
 
     }
+
+    public function reviewProject($id) {
+        $res = $this->db->query("UPDATE tbl_project SET pr_stts=2 WHERE id={$id}");
+        return $res;
+    }
 }
