@@ -30,7 +30,7 @@ class Photos_model extends CI_Model
     {
         $res = $this->db->query("
             SELECT
-              img_path
+              *
             FROM
               tbl_img
             WHERE
@@ -39,4 +39,36 @@ class Photos_model extends CI_Model
 
         return $res;
     }
+
+    public function deletePhotos($type, $fid)
+    {
+        $res = $this->db->query("
+            UPDATE
+              tbl_img
+            SET
+              img_df = 1
+            WHERE
+              img_type={$type} AND img_fid={$fid}
+        ");
+
+        return $res;
+    }
+
+    public function deletePhotoByQuery($query, $type, $fid)
+    {
+        $query = "
+            UPDATE
+              tbl_img
+            SET
+              img_df = 1
+            WHERE
+              {$query} AND img_type={$type} AND img_fid={$fid}
+        ";
+
+        $res = $this->db->query($query);
+
+        return $res;
+    }
+
+
 }

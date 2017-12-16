@@ -15,7 +15,7 @@ class Common extends CI_Controller
         $this->load->model('Webs_model', 'web');
         $this->load->model('Videos_model', 'video');
         $this->load->model('Photos_model', 'photo');
-
+        $this->load->model('Users_model', 'user');
         $this->load->helper('url');
     }
 
@@ -109,7 +109,9 @@ class Common extends CI_Controller
             $result['status'] = false;
             $result['data'] = 'Please select your image type';
         } else {
-            if ($type == 1 or $type == 2) {
+            if ($type == 1) {
+                $root .= 'avatar/';
+            } else if ($type == 2) {
                 $root .= 'profile/';
             } else if ($type == 3) {
                 $root .= 'service/';
@@ -142,13 +144,27 @@ class Common extends CI_Controller
                         'img_utime' => time(),
                         'img_df' => 0
                     );
-                    $ret = $this->photo->createPhotos($key_value);
 
-                    if ($ret == TRUE) {
-                        $d = array('test' => $file);
-                        //array_push($data, $d);
-                        array_push($data, $file);
+                    if ($type == 1) { // profile main
+
+                        // update Avatar
+                        $data1 = array(
+                            'avatar' => $file
+                        );
+
+                        $res = $this->user->editUserProfile($data1, $fid);
+
+                        if ($res == TRUE) {
+                            array_push($data, $file);
+                        }
+                    } else {
+                        $ret = $this->photo->createPhotos($key_value);
+
+                        if ($ret == TRUE) {
+                            array_push($data, $file);
+                        }
                     }
+
                 }
             }
 
@@ -169,6 +185,90 @@ class Common extends CI_Controller
             $randomString .= $characters[rand(0, $charactersLength - 1)];
         }
         return $randomString;
+    }
+
+    public function updateSubProfileImages()
+    {
+        $result = array();
+
+        $type = 2;
+        // 2 : profile sub
+
+        $existingImages = explode(" ", $_POST['existingImages']);
+
+
+        $root = 'uploads/';
+
+        if (!isset($_POST['userId'])) {
+            $result['status'] = false;
+            $result['data'] = 'Please select user';
+        } else {
+            $fid = $_POST['userId'];
+            $data = array();
+
+            // remove all original images except existing images
+            if (sizeof($existingImages) > 0) {
+                $query = "";
+                for ($i = 0; $i < sizeof($existingImages); $i++) {
+
+                    $query = $query . " img_path != '" . $existingImages[$i] . "'";
+                    if ($i != sizeof($existingImages) - 1) {
+                        $query = $query . " AND ";
+                    }
+                }
+                $this->photo->deletePhotoByQuery($query, $type, $fid);
+
+                for ($i = 0; $i < sizeof($existingImages); $i++) {
+                    array_push($data, $existingImages[$i]);
+                }
+            }
+
+            // if new file exist, append
+            if (isset($_FILES['images'])) {
+
+                $root .= 'profile/';
+
+                $upFiles = $_FILES['images'];
+
+                for ($i = 0; $i < sizeof($upFiles['tmp_name']); $i++) {
+
+                    $file = $root . $this->createVerificationCode(20) . ".png";
+
+
+                    if (file_exists($file)) {
+                        chmod($file, 0755);
+                        unlink($file);
+                    }
+
+                    $ret = move_uploaded_file($upFiles['tmp_name'][$i], $file);
+
+                    if ($ret == TRUE) {
+
+                        $file = base_url() . $file;
+                        $key_value = array(
+                            'img_path' => $file,
+                            'img_type' => $type,
+                            'img_fid' => $fid,
+                            'img_ctime' => time(),
+                            'img_utime' => time(),
+                            'img_df' => 0
+                        );
+
+                        $ret = $this->photo->createPhotos($key_value);
+
+                        if ($ret == TRUE) {
+                            array_push($data, $file);
+                        }
+                    }
+                }
+            }
+
+        }
+
+        $result['data'] = $data;
+        $result['status'] = true;
+        echo json_encode($result);
+
     }
 
     public function sendEmail($email, $code) {
