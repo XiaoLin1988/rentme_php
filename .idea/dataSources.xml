@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
+  <component name="DataSourceManagerImpl" format="xml" hash="0">
     <data-source source="LOCAL" name="MySQL - rentme@rds-mysql-rentme.czbzplvueqdi.us-east-1.rds.amazonaws.com" uuid="93d1dc43-d5db-4485-b6c5-d35eeab2b5f5">
       <driver-ref>mysql</driver-ref>
       <synchronize>true</synchronize>
