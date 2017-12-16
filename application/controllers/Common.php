@@ -194,7 +194,7 @@ class Common extends CI_Controller
         $type = 2;
         // 2 : profile sub
 
-        $existingImages = explode(" ", $_POST['existingImages']);
+        $existingImages = explode(" ", trim($_POST['existingImages'], " ") );
 
 
         $root = 'uploads/';

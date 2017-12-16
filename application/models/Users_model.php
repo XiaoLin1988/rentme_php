@@ -131,7 +131,7 @@ class Users_model extends CI_Model {
     {
         // 1 : profile main, 2 : profile sub,
 
-        $query = "SELECT img_path FROM tbl_img WHERE (img_type = 2 AND img_fid = '{$userId}')";
+        $query = "SELECT img_path FROM tbl_img WHERE img_df = 0 AND img_type = 2 AND img_fid = '{$userId}'";
 
         $ret = $this->db->query($query)->result_array();
 
