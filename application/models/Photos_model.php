@@ -70,5 +70,20 @@ class Photos_model extends CI_Model
         return $res;
     }
 
+    public function deletePhotoAll($type, $fid)
+    {
+        $query = "
+            UPDATE
+              tbl_img
+            SET
+              img_df = 1
+            WHERE
+              img_type={$type} AND img_fid={$fid}
+        ";
+
+        $res = $this->db->query($query);
+
+        return $res;
+    }
 
 }

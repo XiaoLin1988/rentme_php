@@ -205,8 +205,12 @@ class Common extends CI_Controller
             $fid = $_POST['userId'];
             $data = array();
 
+            if ($_POST['existingImages'] == "") {
+                $this->photo->deletePhotoAll($type, $fid);
+            }
             // remove all original images except existing images
-            if (($_POST['existingImages'] != "") && (sizeof($existingImages) > 0)) {
+            else if (sizeof($existingImages) > 0) {
+
                 $query = "";
                 for ($i = 0; $i < sizeof($existingImages); $i++) {
 
@@ -220,6 +224,7 @@ class Common extends CI_Controller
                 for ($i = 0; $i < sizeof($existingImages); $i++) {
                     array_push($data, $existingImages[$i]);
                 }
+
             }
 
             // if new file exist, append
