@@ -61,7 +61,7 @@ class Users_model extends CI_Model {
 				)
             ),1) AS distance
             FROM users WHERE( (NOT longitude = {$location['longitude']}) AND ( NOT latitude = {$location['latitude']}) )
-            HAVING distance < {$radius} AND skills LIKE '%{$skill}%'
+            HAVING distance < {$radius} AND EXISTS(SELECT * FROM services sv, skills sk WHERE sv.talent_id=us.id AND sk.title LIKE '$skill')
             ORDER BY distance
             LIMIT 0 , 50;")->result_array();
 

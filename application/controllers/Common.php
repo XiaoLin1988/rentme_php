@@ -96,7 +96,7 @@ class Common extends CI_Controller
         $result = array();
 
         $type = $_POST['type'];
-        // 1 : profile main, 2 : profile sub, 3: service, 4: review
+        // 2 : profile sub, 3: service, 4: review
         $fid = $_POST['foreign_id'];
 
         $data = array();
