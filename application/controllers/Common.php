@@ -196,7 +196,6 @@ class Common extends CI_Controller
 
         $existingImages = explode(" ", trim($_POST['existingImages'], " ") );
 
-
         $root = 'uploads/';
 
         if (!isset($_POST['userId'])) {
@@ -207,7 +206,7 @@ class Common extends CI_Controller
             $data = array();
 
             // remove all original images except existing images
-            if (sizeof($existingImages) > 0) {
+            if (($_POST['existingImages'] != "") && (sizeof($existingImages) > 0)) {
                 $query = "";
                 for ($i = 0; $i < sizeof($existingImages); $i++) {
 
